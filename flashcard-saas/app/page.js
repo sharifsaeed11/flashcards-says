@@ -1,94 +1,64 @@
 import Image from "next/image";
-import styles from "./page.module.css";
 
 export default function Home() {
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
+    <main className="h-full w-full">
+      <div className="w-full p-2">
+        <div className="carousel rounded-box ">
+          <div className="carousel-item">
+            <img
+              src="https://i.pinimg.com/564x/fc/97/53/fc975355779d07f94969d2688fbbc629.jpg"
+              alt="Burger"
+              className="w-80 h-80"
             />
-          </a>
+          </div>
+          <div className="carousel-item">
+            <img
+              className="w-84 h-80"
+              src="https://www.ihna.edu.au/blog/wp-content/uploads/2018/01/1705-shutterstock_405482314.jpg"
+              alt="Burger"
+            />
+          </div>
+          <div className="carousel-item">
+            <img
+              className="w-88 h-80"
+              src="https://mystudylife.com/wp-content/uploads/2022/09/pexels-pixabay-301920-scaled.jpg"
+              alt="Burger"
+            />
+          </div>
+          <div className="carousel-item">
+            <img
+              className="w-88 h-80"
+              src="https://i.etsystatic.com/23728824/r/il/c2794b/2456006787/il_570xN.2456006787_3kir.jpg"
+              alt="Burger"
+            />
+          </div>
+
+          <div className="carousel-item">
+            <img
+              className="w-88 h-80"
+              src="https://i.pinimg.com/736x/63/5d/16/635d16c6fee9440895db2f678404fc44.jpg"
+              alt="Burger"
+            />
+          </div>
         </div>
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
+      <h1 className="text-center text-4xl p-2">
+        Tired of studying for hours just to get nowhere?
+      </h1>
+      <h2 className="text-center text-white text-xl p-2">
+        Our interactive, AI generated flashcards can help you study advanced
+        topics in minutes! Copy paste your notes and your AI flashcards will be
+        generated in seconds. Not sure if its for you? Just give it a try, it's
+        free!
+      </h2>
+      <div className="w-full flex-row flex items-center justify-around">
+        <div />
+        <a href="./generate">
+          <button className="btn btn-primary">Get started</button>
         </a>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+        <div />
       </div>
     </main>
   );
