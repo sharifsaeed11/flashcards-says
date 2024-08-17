@@ -11,7 +11,7 @@ border-gray-500 border-b-2 border-solid"
       <a href=".." className="btn btn-ghost text-xl">
         AI flashcards
       </a>
-      <a href=".." className="text-sm btn btn-ghost text-xl">
+      <a href="./signin" className="text-sm btn btn-ghost text-xl">
         Sign in
       </a>
     </div>
