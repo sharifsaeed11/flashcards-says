@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
@@ -38,6 +39,29 @@ const Page = () => {
   const auth = getAuth(app);
   const user = useAuth();
   const [sets, setSets] = useState([]);
+  const { isLoaded, isSignedIn, user } = useUser()
+    const [flashcards, setFlashcards] = useState([])
+
+    const router = useRouter()
+    const handleCardClick = (id) => {
+        router.push(`/flashcard?id=${id}`)
+    }
+  
+    useEffect(() => {
+        async function getFlashcards() {
+          if (!user) return
+          const docRef = doc(collection(db, 'users'), user.id)
+          const docSnap = await getDoc(docRef)
+          if (docSnap.exists()) {
+            const collections = docSnap.data().flashcards || []
+            setFlashcards(collections)
+          } else {
+            await setDoc(docRef, { flashcards: [] })
+          }
+        }
+        getFlashcards()
+    }, [user])
+  
   return (
     <main className="w-full h-full">
       {user ? (
@@ -48,7 +72,7 @@ const Page = () => {
               : "Your study sets"}
           </span>
           <div className="flex flex-col items-center">
-            {sets.length == 0 && (
+            {flashcards.length == 0 && (
               <Link href="./generate">
                 <button className="btn btn-success m-8">
                   Generate flashcards
@@ -57,10 +81,10 @@ const Page = () => {
             )}
           </div>
           <div className="flex flex-row flex-wrap justify-around pt-4 items-center">
-            {sets.map((set) => {
+            {flashcards.map((set) => {
               return (
                 <button className="w-1/3 m-2 btn btn-outline btn-primary">
-                  {set}
+                  {set.name}
                 </button>
               );
             })}
@@ -92,3 +116,4 @@ export default function RootLayout({ children }) {
     </AuthProvider>
   );
 }
+

@@ -1,4 +1,3 @@
-
 import { NextResponse } from 'next/server'; // Import NextResponse from Next.js for handling responses
 
 // System prompt for the AI, providing guidelines on how to respond to users
@@ -22,10 +21,10 @@ export async function POST(req) {
   
     
     // Make a request to the Meta Llama API
-    const completion = await fetch('https://api.meta.com/v1/llama/completions', {
+    const completion = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${process.env.META_LLAMA_API_KEY}`, // Use your Meta API key from environment variables
+          'Authorization': `Bearer ${process.env.META_LLAMA_API_KEY}`, 
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -34,7 +33,7 @@ export async function POST(req) {
           response_format: { type: 'json_object' },
         }),
       })
-      // Parse the JSON response from the OpenAI API
+      
       const flashcards = JSON.parse(completion.choices[0].message.content)
 
       // Return the flashcards as a JSON response
