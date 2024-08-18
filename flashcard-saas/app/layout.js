@@ -1,6 +1,6 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "./components/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
 import Header from "@/app/components/Header";
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,9 +16,9 @@ export default function RootLayout({ children }) {
       <head>
         <title>AI flashcards</title>
       </head>
-      <body className={inter.className}>
+      <body className={inter.className + " w-full h-full"}>
         <Header></Header>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider className="w-full h-full">{children}</AuthProvider>
       </body>
     </html>
   );

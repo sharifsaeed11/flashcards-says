@@ -44,8 +44,37 @@ const page = () => {
         // ...
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
+        switch (error.code) {
+          case "auth/invalid-email":
+            alert("Invalid email format. Please enter a valid email.");
+            break;
+          case "auth/user-disabled":
+            alert("This account has been disabled. Please contact support.");
+            break;
+          case "auth/user-not-found":
+            alert("No user found with this email. Please sign up.");
+            break;
+          case "auth/wrong-password":
+            alert("Incorrect password. Please try again.");
+            break;
+          case "auth/too-many-requests":
+            alert("Too many failed attempts. Please try again later.");
+            break;
+          case "auth/network-request-failed":
+            alert("Network error. Please check your connection and try again.");
+            break;
+          case "auth/internal-error":
+            alert("An internal error occurred. Please try again later.");
+            break;
+          case "auth/operation-not-allowed":
+            alert(
+              "Email/password sign-in is disabled. Contact the administrator."
+            );
+            break;
+          default:
+            alert("An unknown error occurred. Please try again.");
+            break;
+        }
       });
   };
   return (

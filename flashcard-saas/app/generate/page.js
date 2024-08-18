@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+
 import {
   Container,
   TextField,
@@ -19,7 +20,13 @@ import {
 
 export default function Generate() {
   const [text, setText] = useState("");
-  const [flashcards, setFlashcards] = useState([]);
+  const [flashcards, setFlashcards] = useState([
+    { front: "hello World", back: "does this work?" },
+    {
+      front: "what is the best way to make money?",
+      back: "through hard work, determination and discipline",
+    },
+  ]);
   const [setName, setSetName] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const handleOpenDialog = () => setDialogOpen(true);
@@ -144,22 +151,28 @@ export default function Generate() {
 
       {flashcards.length > 0 && (
         <Box sx={{ mt: 4 }}>
-          <Typography variant="h5" component="h2" gutterBottom>
-            Generated Flashcards
+          <Typography
+            variant="h5"
+            component="h2"
+            gutterBottom
+            className="text-center"
+          >
+            Generated Flashcards:
           </Typography>
           <Grid container spacing={2}>
             {flashcards.map((flashcard, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="h6">Front:</Typography>
-                    <Typography>{flashcard.front}</Typography>
-                    <Typography variant="h6" sx={{ mt: 2 }}>
-                      Back:
-                    </Typography>
-                    <Typography>{flashcard.back}</Typography>
-                  </CardContent>
-                </Card>
+              <Grid item xs={6} sm={6} md={4} key={index}>
+                <label className="swap swap-flip text-9xl ">
+                  <input type="checkbox" className="" />
+
+                  <div className="swap-on max-w-60 text-2xl md:text-3xl lg:text-4xl text-center  p-8 bg-accent text-white rounded-lg h-52 flex justify-center items-center ">
+                    {flashcard.front}
+                  </div>
+
+                  <div className="swap-off max-w-60 text-xl md:text-2xl lg:text-3xl p-8 text-center bg-primary text-white flex justify-center items-center rounded-lg">
+                    {flashcard.back}
+                  </div>
+                </label>
               </Grid>
             ))}
           </Grid>

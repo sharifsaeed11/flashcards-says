@@ -35,7 +35,9 @@ const AuthProvider = ({ children }) => {
 const useAuth = () => useContext(AuthContext);
 
 const Header = () => {
+  const [home, setHome] = useState("..");
   const auth = getAuth(app);
+
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
@@ -48,14 +50,24 @@ const Header = () => {
 
   const [toolBar, setToolBar] = useState(false);
   const { user } = useAuth();
+  useEffect(() => {
+    user ? setHome("./home") : setHome("..");
+  }, [user]);
+
   console.log("User in Header:", user);
 
   let buttonText = user ? "log out" : "log in";
 
   return (
     <div className="navbar bg-base-100 justify-between border-gray-500 border-b-2 border-solid">
-      <a href=".." className="btn btn-ghost text-xl">
-        AI flashcards
+      <a href={home} className="btn btn-ghost text-xl">
+        Home
+      </a>
+      <a href="./generate" className="btn btn-ghost text-sm">
+        Generate new Study set
+      </a>
+      <a href="./flashcards" className="btn btn-ghost text-sm">
+        View your study sets
       </a>
       {user ? (
         <div className="avatar">
