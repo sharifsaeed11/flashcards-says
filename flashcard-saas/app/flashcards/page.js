@@ -48,15 +48,20 @@ const Page = () => {
   const userId = user.uid;
   const [sets, setSets] = useState([]);
   useEffect(() => {
+    console.log("User:", user); // Debug if the user is available
+    if (!user) return;
+
     async function fetchData() {
-      if (!user) return;
+      console.log("Starting fetch...");
 
       const userDocRef = doc(db, "users", user.uid);
       const userDocSnap = await getDoc(userDocRef);
 
       if (userDocSnap.exists()) {
         const userData = userDocSnap.data();
+        console.log("User data:", userData);
         const flashcardSets = userData.flashcardSets || [];
+        console.log("Flashcard sets:", flashcardSets);
 
         const setsWithFlashcards = await Promise.all(
           flashcardSets.map(async (set) => {
@@ -68,14 +73,13 @@ const Page = () => {
             const setData = setDocSnap.exists()
               ? setDocSnap.data()
               : { flashcards: [] };
+            console.log("Set data for", set.name, ":", setData);
             return { name: set.name, flashcards: setData.flashcards || [] };
           })
         );
 
         setSets(setsWithFlashcards);
-        sets.forEach((item) => {
-          console.log(item);
-        });
+        console.log("Final sets:", setsWithFlashcards);
       } else {
         console.log("No user document found!");
       }
@@ -103,11 +107,21 @@ const Page = () => {
             )}
           </div>
           <div className="flex flex-row flex-wrap justify-around pt-4 items-center">
-            {sets.map((set) => {
+            {sets.map((set, index) => {
               return (
-                <button className="w-1/3 m-2 btn btn-outline btn-primary">
-                  {set.name}
-                </button>
+                <Link
+                  href={{
+                    pathname: `/flashcards/${index}`,
+                    query: {
+                      id: index,
+                    },
+                  }}
+                  className="w-1/3 m-2 flex flex-col items-center"
+                >
+                  <button className="w-1/3 m-2 btn btn-outline btn-primary">
+                    {set.name}
+                  </button>
+                </Link>
               );
             })}
           </div>
