@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
@@ -47,6 +48,7 @@ const Page = () => {
 
   const userId = user.uid;
   const [sets, setSets] = useState([]);
+
   useEffect(() => {
     console.log("User:", user); // Debug if the user is available
     if (!user) return;
@@ -88,6 +90,7 @@ const Page = () => {
     fetchData();
   }, [user]);
 
+
   return (
     <main className="w-full h-full">
       {user ? (
@@ -98,7 +101,7 @@ const Page = () => {
               : "Your study sets"}
           </span>
           <div className="flex flex-col items-center">
-            {sets.length == 0 && (
+            {flashcards.length == 0 && (
               <Link href="./generate">
                 <button className="btn btn-success m-8">
                   Generate flashcards
@@ -107,6 +110,7 @@ const Page = () => {
             )}
           </div>
           <div className="flex flex-row flex-wrap justify-around pt-4 items-center">
+
             {sets.map((set, index) => {
               return (
                 <Link
@@ -122,6 +126,7 @@ const Page = () => {
                     {set.name}
                   </button>
                 </Link>
+
               );
             })}
           </div>
@@ -152,3 +157,4 @@ export default function RootLayout({ children }) {
     </AuthProvider>
   );
 }
+

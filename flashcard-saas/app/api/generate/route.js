@@ -1,4 +1,6 @@
+
 import { NextResponse } from "next/server";
+
 
 const systemPrompt = `
 You are a flashcard creator. You take in text and create exactly 10 flashcards from it. Both front and back should be one sentence long and not include unessesarily long words and keep them under 120 characters. Please ensure the JSON format is as follows:
@@ -14,6 +16,7 @@ Make sure the response strictly adheres to this format. Do not include any addit
 `;
 
 export async function POST(req) {
+
   try {
     const data = await req.json();
     console.log("Received request data:", data);
