@@ -1,15 +1,19 @@
 "use client";
 
-import { useState } from "react";
-
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  doc,
+  getDoc,
+  writeBatch,
+} from "firebase/firestore";
 import {
   Container,
   TextField,
   Button,
   Typography,
   Box,
-  Card,
-  CardContent,
   Grid,
   Dialog,
   DialogTitle,
@@ -17,20 +21,77 @@ import {
   DialogActions,
   DialogContent,
 } from "@mui/material";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import app from "../firebase";
 
-export default function Generate() {
+const AuthContext = createContext(null);
+
+const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const auth = getAuth(app);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  return (
+    <AuthContext.Provider value={{ user, loading }}>
+      {!loading && children}
+    </AuthContext.Provider>
+  );
+};
+
+const useAuth = () => useContext(AuthContext);
+
+function Generate() {
+  const db = getFirestore(app);
+  const { user } = useAuth();
   const [text, setText] = useState("");
-  const [flashcards, setFlashcards] = useState([
-    { front: "hello World", back: "does this work?" },
-    {
-      front: "what is the best way to make money?",
-      back: "through hard work, determination and discipline",
-    },
-  ]);
+  const [flashcards, setFlashcards] = useState([]);
   const [setName, setSetName] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
+
   const handleOpenDialog = () => setDialogOpen(true);
   const handleCloseDialog = () => setDialogOpen(false);
+  console.log(user.id);
+  const handleSubmit = async () => {
+    if (!text.trim()) {
+      alert("Please enter some text to generate flashcards.");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text }), // Pass the input text to the API
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate flashcards");
+      }
+
+      const data = await response.json();
+      setFlashcards(data); // Assuming the API returns an array of flashcards
+      console.log(flashcards);
+    } catch (error) {
+      console.error("Error generating flashcards:", error);
+      alert("An error occurred while generating flashcards. Please try again.");
+    }
+  };
 
   const saveFlashcards = async () => {
     if (!setName.trim()) {
@@ -38,13 +99,20 @@ export default function Generate() {
       return;
     }
 
-    try {
-      const userDocRef = doc(collection(db, "users"), user.id);
-      const userDocSnap = await getDoc(userDocRef);
+    if (!user || !user.uid) {
+      alert("User is not authenticated or user ID is missing.");
+      return;
+    }
 
+    try {
+      const db = getFirestore(app);
+      const userDocRef = doc(db, "users", user.uid); // Ensure user ID is correct
+
+      const userDocSnap = await getDoc(userDocRef);
       const batch = writeBatch(db);
 
       if (userDocSnap.exists()) {
+        console.log("User document found, updating existing flashcard sets...");
         const userData = userDocSnap.data();
         const updatedSets = [
           ...(userData.flashcardSets || []),
@@ -52,9 +120,11 @@ export default function Generate() {
         ];
         batch.update(userDocRef, { flashcardSets: updatedSets });
       } else {
+        console.log("User document not found, creating a new one...");
         batch.set(userDocRef, { flashcardSets: [{ name: setName }] });
       }
 
+      // Now, create a reference to the specific flashcard set inside the user's document
       const setDocRef = doc(collection(userDocRef, "flashcardSets"), setName);
       batch.set(setDocRef, { flashcards });
 
@@ -69,38 +139,14 @@ export default function Generate() {
     }
   };
 
-  const handleSubmit = async () => {
-    if (!text.trim()) {
-      alert("Please enter some text to generate flashcards.");
-      return;
-    }
-
-    try {
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        body: text,
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to generate flashcards");
-      }
-
-      const data = await response.json();
-      setFlashcards(data);
-    } catch (error) {
-      console.error("Error generating flashcards:", error);
-      alert("An error occurred while generating flashcards. Please try again.");
-    }
-  };
-
   return (
     <Container maxWidth="md">
       <Box sx={{ my: 4 }}>
         <Typography
-          className="text-center text-white"
           variant="h4"
           component="h1"
           gutterBottom
+          className="text-center text-white"
         >
           Generate Flashcards
         </Typography>
@@ -161,16 +207,16 @@ export default function Generate() {
           </Typography>
           <Grid container spacing={2}>
             {flashcards.map((flashcard, index) => (
-              <Grid item xs={6} sm={6} md={4} key={index}>
+              <Grid item xs={12} sm={6} md={4} key={index}>
                 <label className="swap swap-flip text-9xl ">
                   <input type="checkbox" className="" />
 
-                  <div className="swap-on max-w-60 text-2xl md:text-3xl lg:text-4xl text-center  p-8 bg-accent text-white rounded-lg h-52 flex justify-center items-center ">
-                    {flashcard.front}
+                  <div className="swap-on max-w-120 xs:min-w-120 md:min-w-120 text-xl text-center  p-8 bg-accent text-white rounded-lg h-52 flex justify-center items-center ">
+                    {flashcard.back}
                   </div>
 
-                  <div className="swap-off max-w-60 text-xl md:text-2xl lg:text-3xl p-8 text-center bg-primary text-white flex justify-center items-center rounded-lg">
-                    {flashcard.back}
+                  <div className="swap-off max-w-120 sm:min-w-120  md:min-w-120 text-2xl p-8 text-center bg-primary text-white flex justify-center items-center rounded-lg">
+                    {flashcard.front}
                   </div>
                 </label>
               </Grid>
@@ -178,15 +224,12 @@ export default function Generate() {
           </Grid>
         </Box>
       )}
+
       {flashcards.length > 0 && (
         <Box sx={{ mt: 4, display: "flex", justifyContent: "center" }}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleOpenDialog}
-          >
+          <button onClick={handleOpenDialog} className="mb-8 btn btn-secondary">
             Save Flashcards
-          </Button>
+          </button>
         </Box>
       )}
 
@@ -214,5 +257,13 @@ export default function Generate() {
         </DialogActions>
       </Dialog>
     </Container>
+  );
+}
+
+export default function RootLayout({ children }) {
+  return (
+    <AuthProvider>
+      <Generate />
+    </AuthProvider>
   );
 }
