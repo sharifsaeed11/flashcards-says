@@ -11,7 +11,7 @@ This is a full stack responsive web app that has the ability to
 
 Tech stack used to make this project:
 - Frontend: React, next.js, tailwind CSS, Material UI, Daisy UI
-- Backend: Firebase authentication, clerk authentication (in progress), firebase firestore, llamma API, next.js backend
+- Backend: Firebase authentication, firebase firestore, llamma API, next.js backend
 
 
 - Web app demo (coming soon)
