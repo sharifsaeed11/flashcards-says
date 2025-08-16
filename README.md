@@ -1,4 +1,4 @@
-Flashcards AI
+QuizWhiz
 
 This is a full stack responsive web app that has the ability to
 
